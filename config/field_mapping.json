@@ -1,0 +1,21 @@
+{
+  "orderable_related": [
+    "Vervang_door_echte_kolomnaam_1",
+    "Vervang_door_echte_kolomnaam_2"
+  ],
+  "medical_fields": [
+    "Vervang_door_echte_medische_kolom"
+  ],
+  "facility_fields": [
+    "Vervang_door_echte_facilitaire_kolom"
+  ],
+  "lab_fields": [
+    "Vervang_door_echte_lab_kolom"
+  ],
+  "unspsc_fields": [
+    "Vervang_door_echte_UNSPSC_kolom"
+  ],
+  "organization_specific": {
+     "Voorbeeld Zorginstelling": ["Vervang_door_specifieke_kolom"]
+   }
+}

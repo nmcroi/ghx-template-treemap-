@@ -1,0 +1,10 @@
+{
+  "template_choice": "custom",
+  "gs1_mode": "gs1",
+  "all_orderable": true,
+  "product_type": "medisch",
+  "has_chemicals": false,
+  "is_staffel_file": false,
+  "institutions": ["UMCU", "LUMC"],
+  "version": "v1.0.0"
+}

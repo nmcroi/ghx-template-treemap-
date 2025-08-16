@@ -1,0 +1,10 @@
+{
+  "template_choice": "custom",
+  "gs1_mode": "gs1_only",
+  "all_orderable": true,
+  "product_type": "lab",
+  "has_chemicals": true,
+  "is_staffel_file": false,
+  "institutions": ["UMCU", "VUmc"],
+  "version": "v1.0.0"
+}

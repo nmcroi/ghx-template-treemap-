@@ -1,0 +1,55 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "GHX Template Generator Context",
+  "type": "object",
+  "properties": {
+    "template_choice": {
+      "type": "string",
+      "enum": ["standard", "custom"],
+      "description": "Type template keuze"
+    },
+    "gs1_mode": {
+      "type": "string",
+      "enum": ["none", "gs1", "gs1_only"],
+      "description": "GS1 modus"
+    },
+    "all_orderable": {
+      "type": "boolean",
+      "description": "Alle artikelen bestelbaar (terminologie switch)"
+    },
+    "product_type": {
+      "type": "string",
+      "enum": ["medisch", "lab", "facilitair", "mixed"],
+      "description": "Product categorie"
+    },
+    "has_chemicals": {
+      "type": "boolean",
+      "description": "Bevat chemicaliën/safety velden"
+    },
+    "is_staffel_file": {
+      "type": "boolean",
+      "description": "Gebruik staffel template"
+    },
+    "institutions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Lijst van instellingen"
+    },
+    "version": {
+      "type": "string",
+      "default": "v1.0.0",
+      "description": "Config/generator versie"
+    }
+  },
+  "required": [
+    "template_choice",
+    "gs1_mode", 
+    "all_orderable",
+    "product_type",
+    "has_chemicals",
+    "is_staffel_file",
+    "institutions"
+  ]
+}

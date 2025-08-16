@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Upload Prijslijst - GHX</title>
+  <style>
+    :root{
+      /* Kleuren (GHX huisstijl) */
+      --ghx-blue:   #011883;
+      --ghx-orange: #f26a21;
+      --panel-gray: #f5f5f5;
+      --panel-border:#e6e6e6;
+      --ink: #1b1b1b;
+      --bg: #ffffff;
+      --text-gray: #6c757d;
+      --light-blue: #e3f2fd;
+    }
+
+    /* Basis */
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.5;
+    }
+
+    /* Blauwe topbalk */
+    .topbar{
+      background: var(--ghx-blue);
+      height: 96px;
+      display:flex;
+      align-items:center;
+    }
+    .topbar__inner{
+      width:min(1200px, 94vw);
+      margin-inline:auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+    }
+    .logo-wrap{
+      display:flex; align-items:center; gap:2px;
+    }
+    .logo{
+      height:75px; display:block;
+    }
+    /* User pill verwijderd voor cleaner look */
+
+    /* Oranje navigatiebalk (dunner) */
+    .nav{
+      background: var(--ghx-orange);
+      height: 32px;
+    }
+    .nav__inner{ width:min(1200px, 94vw); margin-inline:auto; height:100%; }
+
+    /* Page title */
+    .page-header{
+      width:min(800px, 94vw);
+      margin: 24px auto 20px;
+      text-align: left;
+    }
+    .page-title{
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--ink);
+      margin: 0;
+    }
+
+    /* Progress steps zoals in screenshot */
+    .progress-container{
+      width:min(1200px, 94vw);
+      margin: 0 auto 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+    }
+    .progress-step{
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text-gray);
+      background: #f8f9fa;
+      border: 2px solid #e9ecef;
+      cursor: default;
+      transition: all 0.2s ease;
+      min-width: 32px;
+      flex-shrink: 0;
+    }
+    .progress-step.clickable{
+      cursor: pointer;
+    }
+    .progress-step.clickable:hover{
+      transform: scale(1.05);
+    }
+    .progress-step.large{
+      width: 48px;
+      height: 48px;
+      font-size: 10px;
+      min-width: 48px;
+      flex-shrink: 0;
+    }
+    .progress-step.active{
+      background: var(--ghx-orange);
+      color: var(--ghx-blue);
+      border-color: var(--ghx-orange);
+    }
+    .progress-step.completed{
+      background: var(--ghx-blue);
+      color: var(--ghx-orange);
+      border-color: var(--ghx-blue);
+    }
+    .progress-line{
+      width: 32px;
+      height: 2px;
+      background: #e9ecef;
+      flex-shrink: 0;
+    }
+    .progress-line.completed{
+      background: var(--ghx-blue);
+    }
+
+    /* Content en panelen zoals in screenshot */
+    .content{
+      width:min(800px, 94vw);
+      margin: 0 auto 48px;
+      display:block;
+    }
+
+    .panel{
+      background: var(--panel-gray);
+      border: 1px solid var(--panel-border);
+      border-radius: 6px;
+      min-height: 320px;
+      position: relative;
+      box-shadow: 0 1px 0 rgba(0,0,0,.03);
+    }
+
+    /* Klein oranje tabje linksboven zoals in screenshot */
+    .panel::before{
+      content:"";
+      position:absolute;
+      top:0; left:0;
+      width: 58px; height: 8px;
+      background: var(--ghx-orange);
+      border-top-left-radius:6px;
+      border-bottom-right-radius:6px;
+    }
+
+    .panel__body{ 
+      padding: 20px;
+    }
+
+    .panel__title{
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--ink);
+      margin: 0 0 16px 0;
+    }
+
+    /* Form styling zoals in screenshot */
+    .form-group{
+      margin-bottom: 20px;
+    }
+    .form-label{
+      display: block;
+      font-weight: 500;
+      margin-bottom: 6px;
+      color: var(--ink);
+      font-size: 14px;
+    }
+    .form-control{
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 14px;
+      background: white;
+    }
+    .form-control:focus{
+      outline: none;
+      border-color: var(--ghx-orange);
+    }
+
+    /* Radio buttons zoals in screenshot */
+    .radio-group{
+      display: flex;
+      gap: 24px;
+      margin-top: 8px;
+    }
+    .radio-item{
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+    }
+    .radio-item input[type="radio"]{
+      accent-color: var(--ghx-orange);
+    }
+
+    /* Multi-select zoals in screenshot */
+    .multi-select{
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      min-height: 80px;
+      padding: 4px;
+      background: white;
+      font-size: 14px;
+    }
+    .multi-select option{
+      padding: 4px 8px;
+    }
+
+    /* Buttons zoals in screenshot */
+    .btn{
+      padding: 8px 16px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: white;
+    }
+    .btn:hover{
+      background: #f8f9fa;
+    }
+    .btn-primary{
+      background: var(--ghx-orange);
+      color: white;
+      border-color: var(--ghx-orange);
+    }
+    .btn-primary:hover{
+      background: #e55a00;
+      border-color: #e55a00;
+    }
+    .btn-cancel{
+      background: #dc3545;
+      color: white;
+      border-color: #dc3545;
+    }
+    .btn-cancel:hover{
+      background: #c82333;
+    }
+    .btn:disabled{
+      opacity: 0.5;
+      cursor: not-allowed !important;
+    }
+    .btn:not(:disabled){
+      cursor: pointer !important;
+    }
+
+    /* Document items zoals in screenshot */
+    .doc-item{
+      background: var(--light-blue);
+      border: 1px solid #bbdefb;
+      border-radius: 4px;
+      padding: 12px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .doc-icon{
+      width: 20px;
+      height: 20px;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>') no-repeat;
+      background-size: contain;
+      flex-shrink: 0;
+      opacity: 0.7;
+    }
+    .doc-content{
+      flex: 1;
+    }
+    .doc-title{
+      font-weight: 500;
+      color: #1565c0;
+      margin-bottom: 2px;
+      font-size: 14px;
+    }
+    .doc-subtitle{
+      font-size: 12px;
+      color: var(--text-gray);
+    }
+
+    /* Context preview zoals in screenshot */
+    .context-preview{
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 12px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      color: #333;
+      white-space: pre-wrap;
+      max-height: 120px;
+      overflow-y: auto;
+    }
+
+    /* Download section */
+    .download-section{
+      border-top: 1px solid var(--panel-border);
+      padding-top: 16px;
+      margin-top: 16px;
+    }
+    .download-title{
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: var(--ghx-blue);
+    }
+
+    /* Voorwaarden lijst */
+    .conditions-list{
+      font-size: 12px;
+      color: var(--text-gray);
+      margin: 16px 0;
+      padding-left: 16px;
+    }
+    .conditions-list li{
+      margin-bottom: 8px;
+    }
+
+    /* Geavanceerde configuratie */
+    .advanced-config{
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin: 16px 0;
+    }
+    .advanced-toggle{
+      background: #f8f9fa;
+      padding: 12px 16px;
+      border-bottom: 1px solid #ddd;
+      cursor: pointer;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--ghx-blue);
+    }
+    .advanced-content{
+      padding: 16px;
+      background: white;
+      display: none;
+    }
+    .advanced-content.open{
+      display: block;
+    }
+
+    /* Responsive */
+    @media (max-width: 960px){
+      .content{ 
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+      .panel{ min-height: 200px; }
+    }
+
+    /* Utility classes */
+    .text-center{ text-align: center; }
+    .text-muted{ color: var(--text-gray); }
+    .mb-0{ margin-bottom: 0; }
+    .mb-2{ margin-bottom: 8px; }
+    .hidden{ display: none; }
+  </style>
+</head>
+<body>
+
+  <!-- Blauwe header met logo -->
+  <header class="topbar">
+    <div class="topbar__inner">
+      <div class="logo-wrap">
+        <img src="static/ghx_logo.png" alt="GHX" class="logo">
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Oranje navigatiebalk (dunner) -->
+  <div class="nav">
+    <div class="nav__inner"></div>
+  </div>
+
+  <!-- Page title -->
+  <div class="page-header">
+    <h1 class="page-title">GHX Template Generator</h1>
+  </div>
+
+  <!-- Progress indicator -->
+  <div class="progress-container" id="progress-container">
+    <!-- Progress steps will be dynamically generated -->
+  </div>
+
+  <!-- Main content: Wizard -->
+  <main class="content">
+    
+    <!-- Wizard Panel -->
+    <section class="panel">
+      <div class="panel__body">
+        <h3 class="panel__title" id="wizard-title">Templatekeuze</h3>
+        
+        <!-- Wizard content will be dynamically inserted here -->
+        <div id="wizard-content">
+          Loading wizard...
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    // API Configuration
+    const API_BASE = 'http://127.0.0.1:5000/api';
+    
+    // Global state
+    let currentStep = 0; // Start met welkomstpagina
+    let completedSteps = new Set([0]); // Start is altijd "voltooid"
+    let templateGenerated = false; // Of er al een template is gegenereerd
+    let lastGeneratedResult = null; // Laatste generatie resultaat
+    let wizardData = {
+      template_choice: null,
+      all_orderable: null,
+      product_type: null,
+      has_chemicals: null,
+      is_staffel_file: null,
+      gs1_mode: null,
+      institutions: [],
+      version: "v1.0.0"
+    };
+    let generatedFileId = null;
+
+    // Step titles and content
+    const stepTitles = [
+      "Welkom",
+      "Bestelbaarheid", 
+      "Producttype",
+      "Chemicaliën",
+      "Staffelprijzen",
+      "GS1 Integratie",
+      "Zorginstellingen",
+      "Overzicht",
+      "Eind"
+    ];
+
+    const stepContent = {
+      0: {
+        title: "Op maat gemaakte prijslijsten voor GHX-leveranciers",
+        type: 'welcome',
+        description: `
+          <p>Met deze tool genereert u een prijstemplate op maat. We verbergen irrelevante kolommen en passen terminologie aan op basis van uw keuzes.</p>
+          
+          <h4>Wat doet de generator?</h4>
+          <ol>
+            <li>Past terminologie aan (bij alle producten bestelbaar → "Besteleenheid/Trade Unit"; anders "Verpakkingseenheid")</li>
+            <li>Verbergt velden die niet op jou van toepassing zijn (facilitair/medisch/lab/GS1/staffel)</li>
+            <li>Markeert verplichte velden (achtergrondkleur)</li>
+            <li>Schrijft een stempel (JSON met jouw antwoorden) in het bestand voor latere validatie</li>
+          </ol>
+        `,
+                    actions: [
+              {
+                type: 'wizard',
+                title: 'Op maat gemaakte template',
+                description: 'Start de vragenlijst voor een aangepaste template',
+                action: 'startWizard'
+              },
+              {
+                type: 'download',
+                title: 'Volledige GHX prijstemplate downloaden',
+                description: 'Download de standaard template met alle kolommen zichtbaar',
+                action: 'downloadStandardTemplate'
+              }
+            ]
+      },
+      1: {
+        title: "Bestelbaarheid",
+        question: "Zijn alle producten in de prijslijst direct bestelbaar door de zorginstelling?",
+        description: "Dit bepaalt de terminologie die we gebruiken in het template.",
+        options: [
+          {
+            key: 'all_orderable',
+            value: true,
+            title: 'Ja, allemaal bestelbaar',
+            description: 'We gebruiken de Besteleenheid (Trade Unit)-terminologie. Velden voor puur logistieke hogere lagen blijven verborgen.'
+          },
+          {
+            key: 'all_orderable',
+            value: false,
+            title: 'Nee, gemengd',
+            description: 'We houden Verpakkingseenheid aan (dozen/pallets mogelijk niet bestelbaar). Alle verpakkingsvelden blijven beschikbaar.'
+          }
+        ],
+        info: "<strong>Tip:</strong> Bij allemaal bestelbaar zetten we o.a. \"Inhoud Besteleenheid = 1\" waar van toepassing en houden UOM's consistent."
+      },
+      2: {
+        title: "Producttype",
+        question: "Wat is het hoofdtype van uw producten?",
+        description: "Dit bepaalt welke specifieke velden we tonen.",
+        options: [
+          {
+            key: 'product_type',
+            value: 'facilitair',
+            title: 'Facilitair',
+            description: 'Kantoor, schoonmaak, logistiek, catering, etc.'
+          },
+          {
+            key: 'product_type',
+            value: 'medisch',
+            title: 'Medisch',
+            description: 'Medische hulpmiddelen, implantaten, devices, IVD\'s'
+          },
+          {
+            key: 'product_type',
+            value: 'lab',
+            title: 'Laboratorium',
+            description: 'Reagentia, chemicaliën, labartikelen'
+          },
+          {
+            key: 'product_type',
+            value: 'gemengd',
+            title: 'Gemengd',
+            description: 'We tonen dan alles, zodat niets ontbreekt'
+          }
+        ],
+        info: "<strong>Belangrijke nuance:</strong><br>• Lever je facilitaire chemicaliën (bijv. desinfectie/schoonmaak met UN/ADR/SDS)? Kies dan Facilitair + bij Chemicaliën \"Ja\".<br>• Lever je IVD's? Kies Medisch (IVDR/CE/risicoklasse-velden zijn dan zichtbaar), ook al gebruik je lab-terminologie."
+      },
+      3: {
+        title: "Chemicaliën en gevaarlijke stoffen",
+        question: "Bevat uw prijslijst producten met chemicaliën die speciale veiligheidsinformatie vereisen?",
+        description: "",
+        options: [
+          {
+            key: 'has_chemicals',
+            value: true,
+            title: 'Ja',
+            description: 'Toon velden voor SDS/UN/ADR, temperaturen, CAS, stofnaam, brutoformule.'
+          },
+          {
+            key: 'has_chemicals',
+            value: false,
+            title: 'Nee',
+            description: 'Verberg deze velden.'
+          }
+        ],
+        info: "<strong>Regelkaart:</strong><br>• Koel/Vries = Ja → Min./Max. temperatuur + Eenheid + Code Type Temperatuur verplicht.<br>• SDS = Ja → Link SDS verplicht.<br>• UN-nummer ingevuld → ADR-klasse hoort erbij."
+      },
+      4: {
+        title: "Staffelbestand",
+        question: "Is dit een staffelbestand of een normale prijslijst?",
+        description: "",
+        options: [
+          {
+            key: 'is_staffel_file',
+            value: false,
+            title: 'Nee, dit is geen staffelbestand',
+            description: 'Normale prijslijst met vaste prijzen. Staffelvelden worden verborgen.'
+          },
+          {
+            key: 'is_staffel_file',
+            value: true,
+            title: 'Ja, dit is een staffelbestand',
+            description: 'Toon Staffel Vanaf / Staffel Tot; één artikel kan dan meerdere regels hebben per staffelniveau.'
+          }
+        ],
+        info: "<strong>Toelichting:</strong> Staffels gelden vaak per artikelnummer over meerdere regels."
+      },
+      5: {
+        title: "GS1 Datasynchronisatie",
+        question: "Deelt u productdata via GS1 GDSN?",
+        description: "",
+        options: [
+          {
+            key: 'gs1_mode',
+            value: 'gs1',
+            title: 'Ja, GDSN',
+            description: 'Toon GS1/GDSN velden (GLN\'s, hiërarchie, GPC, historie GTIN).'
+          },
+          {
+            key: 'gs1_mode',
+            value: 'none',
+            title: 'Nee',
+            description: 'Verberg GS1-specifieke velden.'
+          }
+        ],
+        info: "<strong>Uitleg:</strong> GS1 velden zorgen dat je data synchroon loopt binnen het netwerk (afnemers/markten)."
+      },
+      6: {
+        title: "Zorginstellingen",
+        question: "Voor welke zorginstellingen lever je de prijslijst?",
+        description: "Alles selecteren geeft meer verplichte velden, subset kiezen minder verplicht.",
+        type: 'multiselect',
+        options: [
+          'UMC Utrecht', 'LUMC', 'Amsterdam UMC', 'VU medisch centrum',
+          'Erasmus MC', 'UMC Groningen', 'Radboud UMC', 'Maastricht UMC+'
+        ],
+        info: "<strong>Toelichting:</strong> We gebruiken je selectie om verplichtingen (mandatory) te bepalen en gemarkeerde velden te kleuren."
+      },
+      7: {
+        title: "Overzicht",
+        description: "Controleer je antwoorden voordat we het template genereren.",
+        type: 'summary',
+        info: "<strong>Technische noot:</strong><br>We berekenen zichtbare en verborgen kolommen en zetten in de stempel (embedded JSON) jouw keuzes. Deze stempel gebruikt de validatie-pipeline later om te weten wat mandatory was binnen jouw context."
+      }
+    };
+
+    // Wizard functions
+    function renderStep(step) {
+      const stepData = stepContent[step];
+      const wizardContent = document.getElementById('wizard-content');
+      const wizardTitle = document.getElementById('wizard-title');
+      
+      // Update progress indicator
+      updateProgressIndicator(step);
+      
+      wizardTitle.textContent = stepData.title;
+      
+      let html = '';
+      
+      if (stepData.type === 'welcome') {
+        // Welcome page with actions
+        html = `
+          <div style="color: var(--text-gray); margin-bottom: 32px; line-height: 1.7;">
+            ${stepData.description}
+          </div>
+          
+          <div style="display: grid; gap: 16px; margin: 32px 0;">
+            ${stepData.actions.map(action => `
+              <div style="border: 2px solid var(--panel-border); border-radius: 8px; padding: 20px; cursor: pointer; transition: all 0.3s ease; background: var(--bg);" onclick="${action.action}()">
+                <h4 style="margin: 0 0 8px 0; color: var(--ink); font-size: 18px;">${action.title}</h4>
+                <p style="margin: 0; color: var(--text-gray); font-size: 14px;">${action.description}</p>
+              </div>
+            `).join('')}
+          </div>
+        `;
+        
+      } else if (stepData.type === 'multiselect') {
+        // Multi-select for organizations with prominent question
+        html = '';
+        
+        // Prominent question
+        if (stepData.question) {
+          html += `
+            <h3 style="color: var(--ghx-blue); font-size: 20px; font-weight: 600; margin-bottom: 16px; line-height: 1.4;">
+              ${stepData.question}
+            </h3>
+          `;
+        }
+        
+        // Optional description
+        if (stepData.description) {
+          html += `
+            <p style="color: var(--text-gray); margin-bottom: 24px; line-height: 1.6;">
+              ${stepData.description}
+            </p>
+          `;
+        }
+        
+        html += `
+          <div style="margin: 20px 0; text-align: center;">
+            <button class="btn" onclick="selectAllOrgs()" style="margin-right: 10px;">Selecteer alle</button>
+            <button class="btn" onclick="deselectAllOrgs()">Deselecteer alle</button>
+            <div style="margin-top: 10px; color: var(--text-gray);" id="org-counter">0 geselecteerd</div>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; margin: 16px 0;">
+        `;
+        
+        stepData.options.forEach((org, index) => {
+          const orgValue = org.toLowerCase().replace(/ /g, '_');
+          const isChecked = wizardData.institutions.includes(orgValue);
+          html += `
+            <div class="org-option" onclick="toggleOrganization('${orgValue}', this)" 
+                 style="display: flex; align-items: center; padding: 16px; 
+                        border: 2px solid ${isChecked ? 'var(--ghx-orange)' : 'var(--panel-border)'}; 
+                        border-radius: 8px; cursor: pointer; transition: all 0.3s ease; 
+                        background: ${isChecked ? '#fff7ed' : 'var(--bg)'}; font-size: 14px;
+                        font-weight: ${isChecked ? '600' : '400'};">
+              <input type="checkbox" name="institutions" value="${orgValue}" ${isChecked ? 'checked' : ''} style="display: none;">
+              ${org}
+            </div>
+          `;
+        });
+        
+        html += `</div>`;
+        
+      } else if (stepData.type === 'summary') {
+        // Summary view
+        html = `
+          <p style="color: var(--text-gray); margin-bottom: 24px; line-height: 1.6;">
+            ${stepData.description}
+          </p>
+          <div id="summary-content">Loading summary...</div>
+        `;
+        
+      } else {
+        // Regular options with prominent question
+        html = '';
+        
+        // Prominent question if exists
+        if (stepData.question) {
+          html += `
+            <h3 style="color: var(--ghx-orange); font-size: 20px; font-weight: 600; margin-bottom: 16px; line-height: 1.4;">
+              ${stepData.question}
+            </h3>
+          `;
+        }
+        
+        // Optional description
+        if (stepData.description) {
+          html += `
+            <p style="color: var(--text-gray); margin-bottom: 24px; line-height: 1.6;">
+              ${stepData.description}
+            </p>
+          `;
+        }
+        
+        html += '<div style="display: grid; gap: 12px; margin: 16px 0;">';
+        
+        stepData.options.forEach(option => {
+          const isSelected = wizardData[option.key] === option.value;
+          html += `
+            <div class="option-card" onclick="selectOption('${option.key}', ${typeof option.value === 'string' ? `'${option.value}'` : option.value}, this)" 
+                 style="border: 2px solid ${isSelected ? 'var(--ghx-orange)' : 'var(--panel-border)'}; 
+                        border-radius: 8px; padding: 16px; cursor: pointer; transition: all 0.3s ease; 
+                        background: ${isSelected ? '#fff7ed' : 'var(--bg)'};">
+              <h4 style="margin: 0 0 8px 0; color: var(--ink); font-size: 16px; font-weight: 600;">${option.title}</h4>
+              <p style="margin: 0; color: var(--text-gray); font-size: 14px;">
+                ${option.description}
+              </p>
+            </div>
+          `;
+        });
+        
+        html += '</div>';
+      }
+      
+      // Info box
+      if (stepData.info) {
+        html += `
+          <div style="background: var(--light-blue); border: 1px solid #93c5fd; border-radius: 8px; padding: 16px; margin: 20px 0;">
+            ${stepData.info}
+          </div>
+        `;
+      }
+      
+      // Navigation buttons (niet voor welcome page)
+      if (stepData.type !== 'welcome') {
+        const canGoNext = step === 0 || (step === 6 ? wizardData.institutions.length > 0 : hasValidSelection(step));
+        html += `
+          <div style="display: flex; justify-content: space-between; gap: 16px; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--panel-border);">
+            <button class="btn" onclick="previousStep()" ${step <= 0 ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : ''}>Vorige</button>
+            ${step === 7 ? 
+              '<button class="btn btn-primary" onclick="generateTemplate()">Template genereren</button>' :
+              `<button class="btn ${canGoNext ? 'btn-primary' : ''}" onclick="nextStep()" id="step-${step}-next" ${!canGoNext ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : ''}>Volgende</button>`
+            }
+          </div>
+        `;
+      }
+      
+      wizardContent.innerHTML = html;
+      
+      // Update summary if step 7
+      if (step === 7) {
+        updateSummary();
+      }
+      
+      // Update org counter if step 6 (zonder template te invalideren)
+      if (step === 6) {
+        setTimeout(() => updateOrgCounter(false), 100);
+      }
+    }
+
+    function selectOption(key, value, element) {
+      // Remove selection from siblings
+      element.parentElement.querySelectorAll('.option-card').forEach(card => {
+        card.style.borderColor = 'var(--panel-border)';
+        card.style.background = 'var(--bg)';
+      });
+      
+      // Add selection to clicked element
+      element.style.borderColor = 'var(--ghx-orange)';
+      element.style.background = '#fff7ed';
+      
+      // Store value
+      wizardData[key] = value;
+      
+      // Als er iets wordt gewijzigd en er was al een template gegenereerd,
+      // invalideren we die zodat er een nieuwe moet worden gegenereerd
+      if (templateGenerated) {
+        templateGenerated = false;
+        completedSteps.delete(8); // Eind is niet meer voltooid
+        updateProgressIndicator(currentStep); // Update de visual state
+      }
+      
+      // Enable next button with proper styling
+      const nextBtn = document.getElementById(`step-${currentStep}-next`);
+      if (nextBtn) {
+        nextBtn.disabled = false;
+        nextBtn.className = 'btn btn-primary';
+        nextBtn.style.opacity = '1';
+        nextBtn.style.cursor = 'pointer';
+        nextBtn.removeAttribute('disabled');
+      }
+    }
+
+    function selectAllOrgs() {
+      document.querySelectorAll('.org-option').forEach(element => {
+        const checkbox = element.querySelector('input[type="checkbox"]');
+        checkbox.checked = true;
+        element.style.borderColor = 'var(--ghx-orange)';
+        element.style.background = '#fff7ed';
+        element.style.fontWeight = '600';
+      });
+      updateOrgCounter();
+    }
+
+    function deselectAllOrgs() {
+      document.querySelectorAll('.org-option').forEach(element => {
+        const checkbox = element.querySelector('input[type="checkbox"]');
+        checkbox.checked = false;
+        element.style.borderColor = 'var(--panel-border)';
+        element.style.background = 'var(--bg)';
+        element.style.fontWeight = '400';
+      });
+      updateOrgCounter();
+    }
+
+    function updateOrgCounter(invalidateTemplate = true) {
+      const checked = document.querySelectorAll('input[name="institutions"]:checked');
+      const newInstitutions = Array.from(checked).map(cb => cb.value);
+      
+      // Update element styling for all options
+      document.querySelectorAll('.org-option').forEach(element => {
+        const checkbox = element.querySelector('input[type="checkbox"]');
+        if (checkbox.checked) {
+          element.style.borderColor = 'var(--ghx-orange)';
+          element.style.background = '#fff7ed';
+          element.style.fontWeight = '600';
+        } else {
+          element.style.borderColor = 'var(--panel-border)';
+          element.style.background = 'var(--bg)';
+          element.style.fontWeight = '400';
+        }
+      });
+      
+      // Alleen invalideren als er daadwerkelijk iets is veranderd en invalidateTemplate=true
+      const institutionsChanged = JSON.stringify(wizardData.institutions.sort()) !== JSON.stringify(newInstitutions.sort());
+      
+      wizardData.institutions = newInstitutions;
+      
+      // Alleen invalideren als er echt iets is veranderd EN invalidateTemplate is true
+      if (templateGenerated && institutionsChanged && invalidateTemplate) {
+        templateGenerated = false;
+        completedSteps.delete(8); // Eind is niet meer voltooid
+        updateProgressIndicator(currentStep); // Update de visual state
+      }
+      
+      const counter = document.getElementById('org-counter');
+      if (counter) {
+        counter.textContent = `${checked.length} geselecteerd`;
+      }
+      
+      // Enable next button if at least one is selected
+      const nextBtn = document.getElementById(`step-${currentStep}-next`);
+      if (nextBtn) {
+        if (checked.length > 0) {
+          nextBtn.disabled = false;
+          nextBtn.className = 'btn btn-primary';
+          nextBtn.style.opacity = '1';
+          nextBtn.style.cursor = 'pointer';
+          nextBtn.removeAttribute('disabled');
+        } else {
+          nextBtn.disabled = true;
+          nextBtn.className = 'btn';
+          nextBtn.style.opacity = '0.5';
+          nextBtn.style.cursor = 'not-allowed';
+        }
+      }
+    }
+
+    function toggleOrganization(orgValue, element) {
+      const checkbox = element.querySelector('input[type="checkbox"]');
+      
+      // Toggle state
+      checkbox.checked = !checkbox.checked;
+      
+      // Update visual state
+      if (checkbox.checked) {
+        element.style.borderColor = 'var(--ghx-orange)';
+        element.style.background = '#fff7ed';
+        element.style.fontWeight = '600';
+      } else {
+        element.style.borderColor = 'var(--panel-border)';
+        element.style.background = 'var(--bg)';
+        element.style.fontWeight = '400';
+      }
+      
+      // Update counter and state
+      updateOrgCounter();
+    }
+
+    function nextStep() {
+      if (currentStep < 7) {
+        // Markeer huidige stap als voltooid
+        completedSteps.add(currentStep);
+        goToStep(currentStep + 1);
+      }
+    }
+
+    function previousStep() {
+      if (currentStep > 0) {
+        goToStep(currentStep - 1);
+      }
+    }
+
+    function goToStep(step) {
+      // Update progress indicator
+      updateProgressIndicator(step);
+      
+      // Update current step
+      currentStep = step;
+      
+      // Render new step
+      renderStep(step);
+    }
+
+    function generateProgressIndicator() {
+      const progressContainer = document.getElementById('progress-container');
+      let html = '';
+      
+      for (let i = 0; i <= 8; i++) {
+        if (i > 0) {
+          html += '<div class="progress-line"></div>';
+        }
+        if (i === 0) {
+          html += `<div class="progress-step large" data-step="${i}">Start</div>`;
+        } else if (i === 8) {
+          html += `<div class="progress-step large" data-step="${i}">Eind</div>`;
+        } else {
+          html += `<div class="progress-step" data-step="${i}">${i}</div>`;
+        }
+      }
+      
+      progressContainer.innerHTML = html;
+      
+      // Add event listeners after creating HTML
+      document.querySelectorAll('.progress-step').forEach((step, index) => {
+        step.addEventListener('click', () => {
+          console.log(`Clicked on step ${index}, calling navigateToStep(${index})`);
+          navigateToStep(index);
+        });
+      });
+    }
+
+    function updateProgressIndicator(targetStep) {
+      // Debug logging
+      console.log(`updateProgressIndicator: targetStep=${targetStep}, templateGenerated=${templateGenerated}, completedSteps=`, completedSteps);
+      
+      // Update step circles
+      document.querySelectorAll('.progress-step').forEach((step, index) => {
+        step.classList.remove('active', 'completed', 'clickable');
+        
+        // Bepaal wat de status moet zijn
+        let stepStatus = 'default';
+        
+        if (index === targetStep) {
+          stepStatus = 'active';
+        } else if (completedSteps.has(index)) {
+          stepStatus = 'completed';
+        } else if (templateGenerated && index === 8) {
+          // Speciale case: Eind balletje blijft altijd completed als template is gegenereerd
+          stepStatus = 'completed';
+        }
+        
+        // Voeg de juiste classes toe
+        if (stepStatus === 'active') {
+          step.classList.add('active', 'clickable');
+        } else if (stepStatus === 'completed') {
+          step.classList.add('completed', 'clickable');
+        }
+        
+        console.log(`Step ${index}: status=${stepStatus}, classes=`, step.classList.toString());
+      });
+      
+      // Update progress lines
+      document.querySelectorAll('.progress-line').forEach((line, index) => {
+        line.classList.remove('completed');
+        if (completedSteps.has(index) || (templateGenerated && index === 7)) {
+          line.classList.add('completed');
+        }
+      });
+    }
+
+    function hasValidSelection(step) {
+      const stepData = stepContent[step];
+      if (!stepData || !stepData.options) return false;
+      
+      // Check if any option for this step is selected
+      return stepData.options.some(option => wizardData[option.key] === option.value);
+    }
+
+    function updateSummary() {
+      const summaryContent = document.getElementById('summary-content');
+      if (!summaryContent) return;
+
+      const labels = {
+        template_choice: wizardData.template_choice === 'standard' ? 'Standaard template' : 'Aangepaste template',
+        all_orderable: wizardData.all_orderable ? 'Allemaal bestelbaar' : 'Gemengd (bestelbaar en niet-bestelbaar)',
+        product_type: {'facilitair': 'Facilitair', 'medisch': 'Medisch', 'lab': 'Laboratorium', 'gemengd': 'Gemengd'}[wizardData.product_type],
+        has_chemicals: wizardData.has_chemicals ? 'Ja, bevat chemicaliën/gevaarlijke stoffen' : 'Nee, geen chemicaliën',
+        is_staffel_file: wizardData.is_staffel_file ? 'Ja, dit is een staffelbestand' : 'Nee, normale prijslijst',
+        gs1_mode: wizardData.gs1_mode === 'gs1' ? 'Ja, via GDSN datasynchronisatie' : 'Nee, geen GS1 integratie'
+      };
+
+      summaryContent.innerHTML = `
+        <div style="background: white; border: 1px solid var(--panel-border); border-radius: 8px; padding: 20px; margin: 20px 0;">
+          <h4 style="margin: 0 0 16px 0; color: var(--ghx-blue); font-size: 16px;">Uw antwoorden</h4>
+          
+          <div style="display: grid; gap: 16px;">
+            <div style="border-bottom: 1px solid #f0f0f0; padding-bottom: 12px;">
+              <div style="font-size: 12px; color: var(--text-gray); text-transform: uppercase; margin-bottom: 4px;">Template Type</div>
+              <div style="font-size: 14px; color: var(--ink);">${labels.template_choice}</div>
+            </div>
+            
+            <div style="border-bottom: 1px solid #f0f0f0; padding-bottom: 12px;">
+              <div style="font-size: 12px; color: var(--text-gray); text-transform: uppercase; margin-bottom: 4px;">Bestelbaarheid</div>
+              <div style="font-size: 14px; color: var(--ink);">${labels.all_orderable}</div>
+            </div>
+            
+            <div style="border-bottom: 1px solid #f0f0f0; padding-bottom: 12px;">
+              <div style="font-size: 12px; color: var(--text-gray); text-transform: uppercase; margin-bottom: 4px;">Producttype</div>
+              <div style="font-size: 14px; color: var(--ink);">${labels.product_type}</div>
+            </div>
+            
+            <div style="border-bottom: 1px solid #f0f0f0; padding-bottom: 12px;">
+              <div style="font-size: 12px; color: var(--text-gray); text-transform: uppercase; margin-bottom: 4px;">Chemicaliën</div>
+              <div style="font-size: 14px; color: var(--ink);">${labels.has_chemicals}</div>
+            </div>
+            
+            <div style="border-bottom: 1px solid #f0f0f0; padding-bottom: 12px;">
+              <div style="font-size: 12px; color: var(--text-gray); text-transform: uppercase; margin-bottom: 4px;">Staffelbestand</div>
+              <div style="font-size: 14px; color: var(--ink);">${labels.is_staffel_file}</div>
+            </div>
+            
+            <div style="border-bottom: 1px solid #f0f0f0; padding-bottom: 12px;">
+              <div style="font-size: 12px; color: var(--text-gray); text-transform: uppercase; margin-bottom: 4px;">GS1 Integratie</div>
+              <div style="font-size: 14px; color: var(--ink);">${labels.gs1_mode}</div>
+            </div>
+            
+            <div>
+              <div style="font-size: 12px; color: var(--text-gray); text-transform: uppercase; margin-bottom: 4px;">Zorginstellingen</div>
+              <div style="font-size: 14px; color: var(--ink);">${wizardData.institutions.length} geselecteerd: ${wizardData.institutions.map(inst => inst.replace(/_/g, ' ')).join(', ') || 'Geen'}</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // Welcome page actions
+    function downloadStandardTemplate() {
+      alert('Download van standaard template - dit zou een directe download zijn van het originele bestand.');
+    }
+
+    function startWizard() {
+      goToStep(1);
+    }
+
+    // Template generation
+    async function generateTemplate() {
+      // Hide current step and show generation
+      document.getElementById('wizard-content').innerHTML = `
+        <div style="text-align: center; padding: 40px 20px;">
+          <h3 style="color: var(--ghx-blue); margin-bottom: 20px;">Template wordt gegenereerd...</h3>
+          
+          <div style="background: #f8f9fa; border: 1px solid #ddd; border-radius: 8px; height: 8px; margin: 20px 0; overflow: hidden;">
+            <div id="gen-progress-bar" style="background: var(--ghx-orange); height: 100%; width: 0%; transition: width 0.3s ease;"></div>
+          </div>
+          
+          <div id="gen-status" style="color: var(--text-gray); margin: 10px 0;">
+            Context valideren...
+          </div>
+        </div>
+      `;
+      
+      const progressBar = document.getElementById('gen-progress-bar');
+      const statusText = document.getElementById('gen-status');
+      
+      const steps = [
+        { text: "Context valideren...", percent: 20 },
+        { text: "Field mapping laden...", percent: 40 },
+        { text: "Template engine initialiseren...", percent: 60 },
+        { text: "Excel template genereren...", percent: 80 },
+        { text: "Template succesvol gegenereerd!", percent: 100 }
+      ];
+      
+      try {
+        // Add timestamp
+        wizardData.timestamp = new Date().toISOString().slice(0, 16).replace('T', '_').replace(/:/g, '');
+        
+        for (let i = 0; i < steps.length - 1; i++) {
+          const step = steps[i];
+          statusText.textContent = step.text;
+          progressBar.style.width = step.percent + '%';
+          await new Promise(resolve => setTimeout(resolve, 500));
+        }
+        
+        // Try real API call
+        const response = await fetch(`${API_BASE}/generate-template`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(wizardData)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          generatedFileId = result.file_id;
+          showGenerationResult(result);
+        } else {
+          throw new Error(result.error || 'Onbekende fout');
+        }
+        
+      } catch (error) {
+        console.log('API error:', error);
+        
+        // Fallback to demo mode
+        statusText.textContent = 'API niet beschikbaar - Demo mode';
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        showGenerationResult({
+          success: true,
+          filename: `GHX_Template_DEMO_${wizardData.timestamp || 'generated'}.xlsx`,
+          stats: { total_fields: 103, visible_fields: 82, mandatory_fields: 8 },
+          preset_code: generatePresetCode(),
+          file_size_kb: 1144.2
+        });
+      }
+    }
+
+    function generatePresetCode() {
+      const parts = [
+        (wizardData.product_type || 'mixed').toUpperCase().slice(0, 3),
+        wizardData.gs1_mode === 'gs1' ? 'GS1' : 'NONE',
+        wizardData.all_orderable ? 'ORDER' : 'PACK'
+      ];
+      return parts.join('-');
+    }
+
+    function showGenerationResult(result) {
+      // Check of we al op de result pagina zijn
+      const statusEl = document.getElementById('gen-status');
+      const progressEl = document.getElementById('gen-progress-bar');
+      
+      if (statusEl) statusEl.textContent = "Template succesvol gegenereerd!";
+      if (progressEl) progressEl.style.width = '100%';
+      
+      // Markeer dat er een template is gegenereerd en sla resultaat op
+      templateGenerated = true;
+      lastGeneratedResult = result;
+      completedSteps.add(7); // Markeer overzicht als voltooid
+      completedSteps.add(8); // Markeer Eind ook als voltooid zodat het klikbaar blijft
+      
+      // Ga naar stap 8 (Eind)
+      currentStep = 8;
+      updateProgressIndicator(8);
+      
+      // Verwijder de pagina titel
+      document.getElementById('wizard-title').textContent = '';
+      
+      document.getElementById('wizard-content').innerHTML = `
+        <div style="text-align: center; padding: 20px;">
+          <div style="background: #fff7ed; border: 2px solid var(--ghx-orange); border-radius: 8px; padding: 20px; margin: 10px 0;">
+            <h3 style="color: var(--ghx-orange); margin: 0 0 8px 0;">Template Succesvol Gegenereerd!</h3>
+            <p style="color: var(--ink); margin: 0;">Je aangepaste GHX prijstemplate is klaar voor download.</p>
+          </div>
+          
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin: 20px 0;">
+            <div style="background: var(--panel-gray); border: 1px solid var(--panel-border); border-radius: 6px; padding: 12px;">
+              <div style="font-size: 11px; color: var(--text-gray); text-transform: uppercase; margin-bottom: 4px;">Bestandsnaam</div>
+              <div style="font-size: 14px; font-weight: 600; color: var(--ink);">${result.filename}</div>
+            </div>
+            <div style="background: var(--panel-gray); border: 1px solid var(--panel-border); border-radius: 6px; padding: 12px;">
+              <div style="font-size: 11px; color: var(--text-gray); text-transform: uppercase; margin-bottom: 4px;">Grootte</div>
+              <div style="font-size: 14px; font-weight: 600; color: var(--ink);">${result.file_size_kb} KB</div>
+            </div>
+            <div style="background: var(--panel-gray); border: 1px solid var(--panel-border); border-radius: 6px; padding: 12px;">
+              <div style="font-size: 11px; color: var(--text-gray); text-transform: uppercase; margin-bottom: 4px;">Preset Code</div>
+              <div style="font-size: 14px; font-weight: 600; color: var(--ink);">${result.preset_code}</div>
+            </div>
+            <div style="background: var(--panel-gray); border: 1px solid var(--panel-border); border-radius: 6px; padding: 12px;">
+              <div style="font-size: 11px; color: var(--text-gray); text-transform: uppercase; margin-bottom: 4px;">Zichtbare Velden</div>
+              <div style="font-size: 14px; font-weight: 600; color: var(--ink);">${result.stats.visible_fields} van ${result.stats.total_fields}</div>
+            </div>
+            <div style="background: var(--panel-gray); border: 1px solid var(--panel-border); border-radius: 6px; padding: 12px;">
+              <div style="font-size: 11px; color: var(--text-gray); text-transform: uppercase; margin-bottom: 4px;">Verplichte Velden</div>
+              <div style="font-size: 14px; font-weight: 600; color: var(--ink);">${result.stats.mandatory_fields} gemarkeerd</div>
+            </div>
+          </div>
+
+          <div style="margin: 30px 0;">
+            <button class="btn btn-primary" onclick="downloadTemplate()" style="font-size: 18px; padding: 15px 40px;">
+              Download Template
+            </button>
+          </div>
+
+          <div style="display: flex; justify-content: center; gap: 16px;">
+            <button class="btn" onclick="location.reload()">Nieuwe Template Maken</button>
+            <button class="btn" onclick="goToStep(7)">Terug naar Overzicht</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function navigateToStep(targetStep) {
+      console.log(`🔥 NAVIGATE TO STEP ${targetStep}`);
+      console.log(`   currentStep=${currentStep}`);
+      console.log(`   templateGenerated=${templateGenerated}`);
+      console.log(`   completedSteps=`, Array.from(completedSteps));
+      
+      // Bepaal of navigatie toegestaan is
+      const isCompleted = completedSteps.has(targetStep);
+      const isCurrent = targetStep === currentStep;
+      const isEndWithTemplate = (templateGenerated && targetStep === 8);
+      
+      console.log(`   isCompleted=${isCompleted}, isCurrent=${isCurrent}, isEndWithTemplate=${isEndWithTemplate}`);
+      
+      if (isCompleted || isCurrent || isEndWithTemplate) {
+        console.log(`✅ Navigation allowed to step ${targetStep}`);
+        
+        // Als we naar Eind gaan en er is al een template gegenereerd, toon die
+        if (targetStep === 8 && templateGenerated && lastGeneratedResult) {
+          console.log(`📝 Showing generated result for step 8`);
+          // Als we al op stap 8 zijn, hoeven we niets te doen
+          if (currentStep === 8) {
+            console.log(`Already on step 8, no action needed`);
+          } else {
+            showGenerationResult(lastGeneratedResult);
+          }
+        } else {
+          console.log(`📍 Going to regular step ${targetStep}`);
+          goToStep(targetStep);
+        }
+      } else {
+        console.log(`❌ Navigation NOT allowed to step ${targetStep}`);
+      }
+    }
+
+    async function downloadTemplate() {
+      if (generatedFileId) {
+        try {
+          const response = await fetch(`${API_BASE}/download/${generatedFileId}`);
+          if (response.ok) {
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `GHX_Template_${generatePresetCode()}_${wizardData.timestamp || 'generated'}.xlsx`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url);
+          } else {
+            throw new Error('Download gefaald');
+          }
+        } catch (error) {
+          alert('Download gefaald. API mogelijk niet beschikbaar: ' + error.message);
+        }
+      } else {
+        alert('Demo mode - In echte implementatie wordt hier het template gedownload!');
+      }
+    }
+
+    // Initialize wizard
+    document.addEventListener('DOMContentLoaded', function() {
+      generateProgressIndicator();
+      renderStep(0); // Start met welkomstpagina
+    });
+  </script>
+
+</body>
+</html>

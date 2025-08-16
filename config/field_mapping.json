@@ -1,21 +1,734 @@
 {
-  "orderable_related": [
-    "Vervang_door_echte_kolomnaam_1",
-    "Vervang_door_echte_kolomnaam_2"
-  ],
-  "medical_fields": [
-    "Vervang_door_echte_medische_kolom"
-  ],
-  "facility_fields": [
-    "Vervang_door_echte_facilitaire_kolom"
-  ],
-  "lab_fields": [
-    "Vervang_door_echte_lab_kolom"
-  ],
-  "unspsc_fields": [
-    "Vervang_door_echte_UNSPSC_kolom"
-  ],
-  "organization_specific": {
-     "Voorbeeld Zorginstelling": ["Vervang_door_specifieke_kolom"]
-   }
+  "Kolom A": {
+    "col": "A",
+    "visible": "always",
+    "notes": "Niet gebruikt"
+  },
+  "Artikelnummer": {
+    "col": "B",
+    "visible": "always",
+    "mandatory": "always",
+    "notes": "Altijd zichtbaar en verplicht."
+  },
+  "Artikelnaam": {
+    "col": "C",
+    "visible": "always",
+    "mandatory": "always",
+    "notes": "Altijd zichtbaar en verplicht."
+  },
+  "Artikelomschrijving": {
+    "col": "D",
+    "visible": "always",
+    "notes": "Algemeen."
+  },
+  "Artikelomschrijving Taal Code": {
+    "col": "E",
+    "visible_only": [
+      "gs1"
+    ],
+    "depends_on": [
+      {
+        "field": "Artikelomschrijving",
+        "not_empty": true
+      }
+    ],
+    "notes": "Veld is zichtbaar bij GS1.; 'Verplicht als GS1 actief is én Artikelomschrijving is ingevuld'."
+  },
+  "Brutoprijs (prijs besteleenheid zonder korting & excl. BTW)": {
+    "col": "F",
+    "visible_except": [
+      "gs1_only"
+    ],
+    "notes": "Optioneel; verbergen bij GS1-only."
+  },
+  "Nettoprijs (prijs besteleenheid)": {
+    "col": "G",
+    "visible_except": [
+      "gs1_only"
+    ],
+    "mandatory_except": [
+      "gs1_only"
+    ],
+    "notes": "Verplicht behalve bij GS1-only; commerciële prijs niet nodig in GS1-only."
+  },
+  "Is BestelbareEenheid": {
+    "col": "H",
+    "visible": "always",
+    "mandatory_only": "gs1",
+    "notes": "Verplicht als GS1 actief is."
+  },
+  "Is BasisEenheid": {
+    "col": "I",
+    "visible": "always",
+    "mandatory_only": "gs1",
+    "notes": "Verplicht als GS1 actief is."
+  },
+  "Omschrijving Besteleenheid": {
+    "col": "J",
+    "visible": "always",
+    "notes": "Terminologie switch."
+  },
+  "UOM Code Besteleenheid": {
+    "col": "K",
+    "visible": "always",
+    "notes": "Terminologie switch.; Altijd nodig."
+  },
+  "Inhoud Besteleenheid (ofwel aantal basiseenheden)": {
+    "col": "L",
+    "visible": "always",
+    "notes": "Terminologie switch.; Altijd nodig."
+  },
+  "UOM Code Basiseenheid": {
+    "col": "M",
+    "visible": "always",
+    "notes": "Altijd nodig."
+  },
+  "Inhoud Basiseenheid": {
+    "col": "N",
+    "visible": "always",
+    "notes": "Altijd nodig."
+  },
+  "UOM Code Inhoud Basiseenheid": {
+    "col": "O",
+    "visible": "always",
+    "notes": "Altijd nodig."
+  },
+  "Omrekenfactor (aantal kleinste eenheden in de Besteleenheid)": {
+    "col": "P",
+    "visible": "always",
+    "notes": "Berekend veld."
+  },
+  "Prijs per Kleinste eenheid": {
+    "col": "Q",
+    "visible": "always",
+    "notes": "Optioneel veld."
+  },
+  "Aantal van de Volgende Lagere Verpakkingslaag": {
+    "col": "R",
+    "visible_only": [
+      "gs1"
+    ],
+    "notes": "GS1/GDSN-veld; alleen tonen bij GS1."
+  },
+  "Artikel Hiërarchie Omschrijving": {
+    "col": "S",
+    "visible_only": [
+      "gs1"
+    ],
+    "notes": "GS1/GDSN-veld; alleen tonen bij GS1."
+  },
+  "GTIN Besteleenheid": {
+    "col": "T",
+    "visible": "always",
+    "notes": "Barcode identificatie."
+  },
+  "GTIN Besteleenheid Historie": {
+    "col": "U",
+    "visible_only": [
+      "gs1"
+    ],
+    "notes": "GS1/GDSN-veld; alleen tonen bij GS1."
+  },
+  "GTIN Basiseenheid": {
+    "col": "V",
+    "visible": "always",
+    "notes": "Barcode identificatie."
+  },
+  "GTIN Basiseenheid Historie": {
+    "col": "W",
+    "visible_only": [
+      "gs1"
+    ],
+    "notes": "GS1/GDSN-veld; alleen tonen bij GS1."
+  },
+  "Aanvullende Productidentificatie": {
+    "col": "X",
+    "visible_only": [
+      "medisch",
+      "lab"
+    ],
+    "mandatory_only": [
+      "medisch"
+    ],
+    "depends_on": [
+      {
+        "field": "GTIN Besteleenheid",
+        "not_empty": false
+      },
+      {
+        "field": "GTIN Basiseenheid",
+        "not_empty": false
+      }
+    ],
+    "notes": "Fallback zonder GTIN (medisch): verplicht als beide GTINs ontbreken."
+  },
+  "Code voor Aanvullende Productidentificatie": {
+    "col": "Y",
+    "visible_only": [
+      "medisch",
+      "lab"
+    ],
+    "depends_on": [
+      {
+        "field": "Aanvullende Productidentificatie",
+        "not_empty": true
+      }
+    ],
+    "notes": "Verplicht zodra Aanvullende Productidentificatie is ingevuld."
+  },
+  "GHX BTW Code": {
+    "col": "Z",
+    "visible": "always",
+    "notes": "Nederlandse BTW vereiste."
+  },
+  "Staffel Vanaf": {
+    "col": "AA",
+    "visible_only": [
+      "staffel"
+    ],
+    "mandatory_only": [
+      "staffel"
+    ],
+    "notes": "Alleen bij staffelbestanden."
+  },
+  "Staffel Tot": {
+    "col": "AB",
+    "visible_only": [
+      "staffel"
+    ],
+    "mandatory_only": [
+      "staffel"
+    ],
+    "notes": "Alleen bij staffelbestanden."
+  },
+  "Naam Fabrikant": {
+    "col": "AC",
+    "visible": "always",
+    "mandatory_only": [
+      "medisch",
+      "gs1"
+    ],
+    "notes": "Fabrikantnaam verplicht voor medisch of GS1-context."
+  },
+  "Artikelnummer Fabrikant": {
+    "col": "AD",
+    "visible": "always",
+    "notes": "Fabrikant identificatie."
+  },
+  "GLN Fabrikant": {
+    "col": "AE",
+    "visible_only": [
+      "gs1"
+    ],
+    "notes": "GS1/GDSN-veld; alleen tonen bij GS1."
+  },
+  "GLN Leverancier": {
+    "col": "AF",
+    "visible_only": [
+      "gs1"
+    ],
+    "notes": "GS1/GDSN-veld; alleen tonen bij GS1."
+  },
+  "Doelmarkt Landcode": {
+    "col": "AG",
+    "visible_only": [
+      "gs1"
+    ],
+    "mandatory_only": [
+      "gs1"
+    ],
+    "notes": "Doelmarkt (bijv. NL) verplicht bij GS1/GDSN."
+  },
+  "Link Artikelinformatie": {
+    "col": "AH",
+    "visible": "always",
+    "notes": "Optioneel."
+  },
+  "Link Artikelfoto": {
+    "col": "AI",
+    "visible": "always",
+    "notes": "Optioneel."
+  },
+  "Link IFU": {
+    "col": "AJ",
+    "visible_only": [
+      "medisch",
+      "lab"
+    ],
+    "notes": "IFU (gebruikersinstructie) link; medisch/lab context."
+  },
+  "Functionele Artikelnaam": {
+    "col": "AK",
+    "visible": "always",
+    "notes": "Optioneel."
+  },
+  "Functionele Naam Taal Code": {
+    "col": "AL",
+    "visible_only": [
+      "gs1"
+    ],
+    "depends_on": [
+      {
+        "field": "Functionele Artikelnaam",
+        "not_empty": true
+      }
+    ],
+    "notes": "GS1-veld; verplicht zodra Functionele Artikelnaam gevuld is."
+  },
+  "Merknaam": {
+    "col": "AM",
+    "visible": "always",
+    "notes": "Optioneel."
+  },
+  "Artikelnummer Alternatief Artikel": {
+    "col": "AN",
+    "visible": "always",
+    "notes": "Optioneel."
+  },
+  "Artikelna+B43am Alternatief Artikel": {
+    "col": "AO",
+    "visible": "always",
+    "notes": "Dependency van AN."
+  },
+  "Barcode Alternatief Artikel": {
+    "col": "AP",
+    "visible": "always",
+    "notes": "Optioneel."
+  },
+  "UNSPSC Code": {
+    "col": "AQ",
+    "visible": "always",
+    "notes": "Classificatie."
+  },
+  "GMDN Code": {
+    "col": "AR",
+    "visible_only": [
+      "medisch",
+      "lab"
+    ],
+    "notes": "Niet relevant voor facilitair; tonen bij medisch/lab."
+  },
+  "EMDN Code": {
+    "col": "AS",
+    "visible_only": [
+      "medisch",
+      "lab"
+    ],
+    "notes": "Niet relevant voor facilitair; tonen bij medisch/lab."
+  },
+  "GPCCategoryCode": {
+    "col": "AT",
+    "visible_only": [
+      "gs1"
+    ],
+    "notes": "GS1/GDSN-veld; alleen tonen bij GS1."
+  },
+  "Code voor Aanvullende Productclassificatie": {
+    "col": "AU",
+    "visible_only": [
+      "medisch",
+      "lab"
+    ],
+    "notes": "Niet relevant voor facilitair; tonen bij medisch/lab."
+  },
+  "Aanvullende Productclassificatiewaarde (Risicoklasse)": {
+    "col": "AV",
+    "visible_only": [
+      "medisch",
+      "lab"
+    ],
+    "notes": "Niet relevant voor facilitair; tonen bij medisch/lab."
+  },
+  "CE Certificaat nummer": {
+    "col": "AW",
+    "visible_only": [
+      "medisch"
+    ],
+    "notes": "Medisch CE-certificaat nummer."
+  },
+  "CE Certificaat einddatum": {
+    "col": "AX",
+    "visible_only": [
+      "medisch"
+    ],
+    "depends_on": [
+      {
+        "field": "CE Certificaat nummer",
+        "not_empty": true
+      }
+    ],
+    "notes": "Verplicht zodra CE-certificaat nummer is opgegeven."
+  },
+  "CE Certificerende instantie": {
+    "col": "AY",
+    "visible_only": [
+      "medisch"
+    ],
+    "depends_on": [
+      {
+        "field": "CE Certificaat nummer",
+        "not_empty": true
+      }
+    ],
+    "notes": "Verplicht zodra CE-certificaat nummer is opgegeven."
+  },
+  "Duurzaam Geproduceerd": {
+    "col": "AZ",
+    "visible_only": [
+      "facilitair",
+      "lab"
+    ],
+    "notes": "Niet relevant voor medisch; tonen bij facilitair/lab."
+  },
+  "Naam Duurzaamheidslabel": {
+    "col": "BA",
+    "visible_only": [
+      "facilitair",
+      "lab"
+    ],
+    "notes": "Niet relevant voor medisch; tonen bij facilitair/lab."
+  },
+  "Omschrijving Duurzaamheid": {
+    "col": "BB",
+    "visible_only": [
+      "facilitair",
+      "lab"
+    ],
+    "notes": "Niet relevant voor medisch; tonen bij facilitair/lab."
+  },
+  "CAS nummer": {
+    "col": "BC",
+    "visible_only": [
+      "chemicals"
+    ],
+    "notes": "Chemie-/gevaar-informatie; alleen tonen bij chemicaliën."
+  },
+  "Stofnaam": {
+    "col": "BD",
+    "visible_only": [
+      "chemicals"
+    ],
+    "notes": "Chemie-/gevaar-informatie; alleen tonen bij chemicaliën."
+  },
+  "Brutoformule": {
+    "col": "BE",
+    "visible_only": [
+      "chemicals"
+    ],
+    "notes": "Chemie-/gevaar-informatie; alleen tonen bij chemicaliën."
+  },
+  "Claim Type Code": {
+    "col": "BF",
+    "visible": "always",
+    "notes": "Claims voor alle categorieën."
+  },
+  "Element Claim Code": {
+    "col": "BG",
+    "visible": "always",
+    "notes": "Claims voor alle categorieën."
+  },
+  "UN-nummer Gevaarlijke Stof": {
+    "col": "BH",
+    "visible_only": [
+      "chemicals"
+    ],
+    "notes": "Transportcode gevaarlijke stoffen."
+  },
+  "ADR Gevarenklasse": {
+    "col": "BI",
+    "visible_only": [
+      "chemicals"
+    ],
+    "notes": "ADR gevarenklasse; koppel met UN-nummer."
+  },
+  "Veiligheidsblad (VIB/SDS)": {
+    "col": "BJ",
+    "visible_only": [
+      "chemicals"
+    ],
+    "notes": "Chemie-/gevaar-informatie; alleen tonen bij chemicaliën."
+  },
+  "Link Veiligheidsinformatieblad (SDS)": {
+    "col": "BK",
+    "visible_only": [
+      "chemicals"
+    ],
+    "depends_on": [
+      {
+        "field": "Veiligheidsblad (VIB/SDS)",
+        "equals": true
+      }
+    ],
+    "notes": "Verplicht als Veiligheidsblad (SDS) = Ja."
+  },
+  "Eindgebruikersverklaring": {
+    "col": "BL",
+    "visible_only": [
+      "chemicals"
+    ],
+    "notes": "Chemie-/gevaar-informatie; alleen tonen bij chemicaliën."
+  },
+  "Koelgoed": {
+    "col": "BM",
+    "visible_only": [
+      "chemicals"
+    ],
+    "notes": "Chemie-/gevaar-informatie; alleen tonen bij chemicaliën."
+  },
+  "Vriesgoed": {
+    "col": "BN",
+    "visible_only": [
+      "chemicals"
+    ],
+    "notes": "Chemie-/gevaar-informatie; alleen tonen bij chemicaliën."
+  },
+  "Code Type Temperatuur": {
+    "col": "BO",
+    "visible_only": [
+      "chemicals"
+    ],
+    "notes": "Chemie-/gevaar-informatie; alleen tonen bij chemicaliën."
+  },
+  "Gebruiksaanwijzing Code Referentie": {
+    "col": "BP",
+    "visible_only": [
+      "medisch",
+      "lab"
+    ],
+    "depends_on": [
+      {
+        "field": "Link IFU",
+        "not_empty": true
+      }
+    ],
+    "notes": "Verplicht zodra IFU-link is opgegeven (medisch/lab)."
+  },
+  "Maximum Temperatuur": {
+    "col": "BQ",
+    "visible_only": [
+      "chemicals"
+    ],
+    "notes": "Chemie-/gevaar-informatie; alleen tonen bij chemicaliën."
+  },
+  "Minimum Temperatuur": {
+    "col": "BR",
+    "visible_only": [
+      "chemicals"
+    ],
+    "notes": "Chemie-/gevaar-informatie; alleen tonen bij chemicaliën."
+  },
+  "Eenheid van Temperatuur": {
+    "col": "BS",
+    "visible_only": [
+      "chemicals"
+    ],
+    "notes": "Chemie-/gevaar-informatie; alleen tonen bij chemicaliën."
+  },
+  "Bruto Gewicht Besteleenheid": {
+    "col": "BT",
+    "visible": "always",
+    "notes": "Terminologie switch."
+  },
+  "Eenheidscode Bruto Gewicht (UOM)": {
+    "col": "BU",
+    "visible": "always",
+    "notes": "Terminologie switch."
+  },
+  "Hoogte": {
+    "col": "BV",
+    "visible": "always",
+    "notes": "Dimensie info."
+  },
+  "Eenheidscode Hoogte (UOM)": {
+    "col": "BW",
+    "visible": "always",
+    "notes": "Dimensie info."
+  },
+  "Breedte": {
+    "col": "BX",
+    "visible": "always",
+    "notes": "Dimensie info."
+  },
+  "Eenheidscode Breedte (UOM)": {
+    "col": "BY",
+    "visible": "always",
+    "notes": "Dimensie info."
+  },
+  "Diepte": {
+    "col": "BZ",
+    "visible": "always",
+    "notes": "Dimensie info."
+  },
+  "Eenheidscode Diepte (UOM)": {
+    "col": "CA",
+    "visible": "always",
+    "notes": "Dimensie info."
+  },
+  "Bruto Gewicht Basiseenheid (Incl. verpakking)": {
+    "col": "CB",
+    "visible": "always",
+    "notes": "Dimensie info."
+  },
+  "Eenheidscode Gewicht Basiseenheid (UOM)": {
+    "col": "CC",
+    "visible": "always",
+    "notes": "Dimensie info."
+  },
+  "Herbruikbaar": {
+    "col": "CD",
+    "visible_only": [
+      "medisch",
+      "lab"
+    ],
+    "notes": "Niet relevant voor facilitair; tonen bij medisch/lab."
+  },
+  "Herbruikbaarheids Code": {
+    "col": "CE",
+    "visible_only": [
+      "medisch",
+      "lab"
+    ],
+    "notes": "Niet relevant voor facilitair; tonen bij medisch/lab."
+  },
+  "Indicatie Implanteerbaar": {
+    "col": "CF",
+    "visible_only": [
+      "medisch",
+      "lab"
+    ],
+    "notes": "Niet relevant voor facilitair; tonen bij medisch/lab."
+  },
+  "Bevat het Artikel Menselijk Weefsel": {
+    "col": "CG",
+    "visible_only": [
+      "medisch",
+      "lab"
+    ],
+    "notes": "Niet relevant voor facilitair; tonen bij medisch/lab."
+  },
+  "Serienummer": {
+    "col": "CH",
+    "visible_only": [
+      "medisch",
+      "lab"
+    ],
+    "notes": "Niet relevant voor facilitair; tonen bij medisch/lab."
+  },
+  "Locatie Serienummer op de Verpakking": {
+    "col": "CI",
+    "visible_only": [
+      "medisch",
+      "lab"
+    ],
+    "notes": "Niet relevant voor facilitair; tonen bij medisch/lab."
+  },
+  "Batch Nummer": {
+    "col": "CJ",
+    "visible_only": [
+      "medisch",
+      "lab"
+    ],
+    "notes": "Niet relevant voor facilitair; tonen bij medisch/lab."
+  },
+  "Steriel": {
+    "col": "CK",
+    "visible_only": [
+      "medisch",
+      "lab"
+    ],
+    "notes": "Niet relevant voor facilitair; tonen bij medisch/lab."
+  },
+  "Type Sterilisatie Gebruikt door Fabrikant": {
+    "col": "CL",
+    "visible_only": [
+      "medisch"
+    ],
+    "depends_on": [
+      {
+        "field": "Steriel",
+        "equals": true
+      }
+    ],
+    "notes": "Verplicht als Steriel = Ja."
+  },
+  "Latex": {
+    "col": "CM",
+    "visible_only": [
+      "medisch",
+      "lab"
+    ],
+    "notes": "Niet relevant voor facilitair; tonen bij medisch/lab."
+  },
+  "MRI Compatibility": {
+    "col": "CN",
+    "visible_only": [
+      "medisch",
+      "lab"
+    ],
+    "notes": "Niet relevant voor facilitair; tonen bij medisch/lab."
+  },
+  "Is ConsumentenEenheid": {
+    "col": "CO",
+    "visible_only": [
+      "facilitair",
+      "lab"
+    ],
+    "notes": "Niet relevant voor medisch; tonen bij facilitair/lab."
+  },
+  "Is VerzendEenheid": {
+    "col": "CP",
+    "visible": "always",
+    "notes": "Logistiek info."
+  },
+  "Levertijd": {
+    "col": "CQ",
+    "visible_only": [
+      "facilitair",
+      "lab"
+    ],
+    "visible_except": [
+      "gs1_only"
+    ],
+    "notes": "Commerciële doorlooptijd; verbergen bij GS1-only."
+  },
+  "Code Type Datum op Verpakking": {
+    "col": "CR",
+    "visible": "always",
+    "notes": "Datum info."
+  },
+  "Startdatum Beschikbaarheid": {
+    "col": "CS",
+    "visible": "always",
+    "notes": "Beschikbaarheid."
+  },
+  "Einddatum Beschikbaarheid": {
+    "col": "CT",
+    "visible": "always",
+    "notes": "Beschikbaarheid."
+  },
+  "Startdatum Prijs Artikel": {
+    "col": "CU",
+    "visible": "always",
+    "notes": "Prijsperiode."
+  },
+  "Einddatum Prijs Artikel": {
+    "col": "CV",
+    "visible": "always",
+    "notes": "Prijsperiode."
+  },
+  "Contract aanwezig": {
+    "col": "CW",
+    "visible": "always",
+    "notes": "Contract info."
+  },
+  "Contractnummer Provider": {
+    "col": "CX",
+    "visible": "always",
+    "notes": "Contract info."
+  },
+  "Zoeksleutels": {
+    "col": "CY",
+    "visible": "always",
+    "notes": "Zoekfunctionaliteit."
+  }
 }

@@ -1,0 +1,10 @@
+{
+  "template_choice": "custom",
+  "gs1_mode": "none",
+  "all_orderable": false,
+  "product_type": "facilitair",
+  "has_chemicals": false,
+  "is_staffel_file": false,
+  "institutions": ["AMC"],
+  "version": "v1.0.0"
+}

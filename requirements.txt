@@ -1,3 +1,16 @@
-streamlit
-pandas
-openpyxl
+# GHX Template Generator Requirements
+
+# Core dependencies
+openpyxl>=3.1.5
+jsonschema>=4.23.0
+
+# Optional development dependencies  
+pandas>=2.2.0
+streamlit>=1.45.0
+
+# Testing
+pytest>=7.0.0
+
+# Development tools (optional)
+black>=23.0.0
+flake8>=6.0.0

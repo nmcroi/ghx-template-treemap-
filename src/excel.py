@@ -10,7 +10,7 @@ from openpyxl import load_workbook, Workbook
 from openpyxl.styles import PatternFill, Font
 from openpyxl.comments import Comment
 from openpyxl.worksheet.worksheet import Worksheet
-from .engine import FieldDecision
+from engine import FieldDecision
 
 
 class ExcelProcessor:
@@ -112,6 +112,9 @@ class ExcelProcessor:
             # Voeg comments toe
             if decision.notes:
                 self._add_header_comment(ws, column, decision.notes)
+        
+        # Forceer verbergen van specifieke kolommen (AA, AB) - altijd verbergen
+        self.hide_columns_permanently(ws, ['AA', 'AB'])
     
     def _apply_mandatory_styling(self, ws: Worksheet, column: str) -> None:
         """
@@ -204,7 +207,7 @@ class ExcelProcessor:
             context_dict: Context dictionary
         """
         # Genereer compacte code
-        from .context import Context
+        from context import Context
         
         # Reconstruct context object om preset code te genereren
         try:
@@ -292,3 +295,42 @@ class ExcelProcessor:
             errors.append(f"Kan template bestand niet lezen: {e}")
         
         return errors
+    
+    def hide_columns_permanently(self, 
+                                worksheet: Worksheet,
+                                columns_to_hide: List[str],
+                                method: str = "all_methods") -> None:
+        """
+        Verberg kolommen permanent met verschillende methodes voor maximale compatibiliteit.
+        
+        Args:
+            worksheet: Excel worksheet
+            columns_to_hide: Lijst van kolom letters (bijv. ['AA', 'AB'])
+            method: Verstop methode ('all_methods' aanbevolen voor beste compatibiliteit)
+        """
+        try:
+            from enhanced_column_hiding import ColumnHider, HideMethod
+            
+            hider = ColumnHider()
+            method_enum = HideMethod(method)
+            
+            result = hider.hide_columns(worksheet, columns_to_hide, method_enum)
+            
+            if result['errors']:
+                print(f"Waarschuwingen bij kolom verbergen: {result['errors']}")
+            else:
+                print(f"✅ Kolommen {columns_to_hide} succesvol verborgen met methode '{method}'")
+                
+        except ImportError:
+            # Fallback als enhanced_column_hiding niet beschikbaar is
+            print("⚠️ Enhanced column hiding niet beschikbaar, gebruik basis methode")
+            for col in columns_to_hide:
+                try:
+                    worksheet.column_dimensions[col].hidden = True
+                    worksheet.column_dimensions[col].width = 0
+                    print(f"✅ Kolom {col} verborgen (basis methode)")
+                except Exception as e:
+                    print(f"❌ Fout bij verbergen kolom {col}: {e}")
+        
+        except Exception as e:
+            print(f"❌ Fout bij permanent verbergen kolommen: {e}")

@@ -6,8 +6,8 @@ Bevat de beslislogica voor veld zichtbaarheid, verplichte velden en dependencies
 
 from typing import Dict, Any, Set, List, Optional
 from dataclasses import dataclass
-from .context import Context
-from .mapping import FieldMapping
+from context import Context
+from mapping import FieldMapping
 
 
 @dataclass

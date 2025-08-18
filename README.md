@@ -265,6 +265,26 @@ Voeg logica toe aan `Context.labels()` methode voor custom business rules.
 
 Extend `engine._evaluate_condition()` voor geavanceerde dependency logica.
 
+
+## 🔧 Automatische Kolom Verberging
+
+Kolommen AA en AB ("Staffel Vanaf"/"Staffel Tot") worden automatisch verborgen bij elke template generatie.
+
+### Technische Details
+- **Methode**: Enhanced multi-method hiding voor maximale Excel compatibiliteit  
+- **Integratie**: Automatisch in ExcelProcessor klasse
+- **Onderhoud**: Gebruik `excel_template_audit.py` voor template validatie
+- **Resultaat**: Kolommen blijven verborgen, ook na Excel heropen
+
+### Onderhoud Tools
+```bash
+# Audit template voor kolom conflicten
+python excel_template_audit.py
+
+# Test enhanced column hiding
+python -c "from enhanced_column_hiding import ColumnHider; print('✅ Module OK')"
+```
+
 ## 📝 Licentie
 
 © 2024 GHX Template Generator Team

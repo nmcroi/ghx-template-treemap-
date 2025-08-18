@@ -46,3 +46,22 @@ Thumbs.db
 # Application specific
 *.xlsx
 !templates/*.xlsx  # Keep template Excel files in the templates directory
+
+# Development and Test Files - Added after AA/AB column hiding solution
+backup_development_files/
+out/archive_test_files/
+out/*test*.xlsx
+out/*test*.json
+*_test.py
+debug_*.py
+test_*.py
+cleanup_*.py
+audit_excel_visibility.py
+generate_template.py
+generate_template_v2.py
+safe_hide_columns.py
+CLEANUP_PLAN.md
+
+# Excel temp files
+~$*.xlsx
+~$*.xls
